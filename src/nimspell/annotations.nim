@@ -1,5 +1,7 @@
 import hmisc/algo/htext_algo
 
+export htext_algo
+
 type
   WAnnotationKind* = enum
     wakNone
@@ -25,6 +27,8 @@ type
 func initAnnotation*(styleKind: WStyleKind): WAnnotation =
   WAnnotation(kind: wakStyle, styleError: styleKind)
 
+func initAnnotation*(corrections: seq[string]): WAnnotation =
+  WAnnotation(kind: wakSpelling, replacements: corrections)
 
 func `$`*[T](text: seq[TextWord[T]]): string =
   for idx, word in text:

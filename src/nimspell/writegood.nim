@@ -1,7 +1,7 @@
 import hmisc/algo/[htext_algo, hstring_algo, halgorithm]
 import hmisc/types/colorstring
 import annotations
-import std/[strformat, options]
+import std/[strformat, options, strutils]
 
 export htext_algo
 
@@ -79,8 +79,9 @@ func highlightSuggestions*(buf: seq[AnnotatedWord]): seq[TermWord] =
             resWord.attr = initStyle(fgYellow)
           of wskRepetition:
             resWord.attr = initStyle(fgGreen)
-      else:
-        raiseAssert(&"#[ IMPLEMENT for kind {word.kind} {instantiationInfo()} ]#")
+      of wakSpelling:
+        resWord.text &= " -> [" & word.attr.replacements.join(" ") & "]"
+        resWord.attr = initStyle(fgBlue)
 
     result.add resWord
 
