@@ -13,6 +13,7 @@ jobs:
         with:
           path: '../nim'
           version: 'version-1-4'
+      - run: sudo apt-get install -y hunspell-en-us hunspell libhunspell-dev
       - run: "nimble -y test && nimble install -y"
       - run: "hmisc-putils docgen"
       - uses: crazy-max/ghaction-github-pages@v1
