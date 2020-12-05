@@ -1,12 +1,13 @@
-# This is just an example to get you started. You may wish to put all of your
-# tests into a single file, or separate them into multiple `test1`, `test2`
-# etc. files (better names are recommended, just make sure the name starts with
-# the letter 't').
-#
-# To run these tests, simply execute `nimble test`.
-
 import unittest
 
-import nimspell
-test "can add":
-  check add(5, 5) == 10
+import nimspell/[writegood, annotations]
+
+suite "Writegood":
+  test "test 1":
+    let text = "We offer a completely different formulation of CFA. " &
+      "Termination is is guaranteed on any input."
+    var words = splitText[WAnnotation](text)
+    markWeasels(words)
+    markPassives(words)
+    markRepetitions(words)
+    echo words.highlightSuggestions()
