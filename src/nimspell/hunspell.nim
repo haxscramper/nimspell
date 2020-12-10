@@ -1,3 +1,21 @@
+import hmisc/other/oswrap
+import std/macros
+
+static:
+  let deps = getMissingDependencies({
+    DistributionDebianDerivatives : @[
+      "hunspell",
+      "libhunspell-dev"
+    ],
+    { Distribution.ArchLinux } : @[ "hunspell" ]
+  })
+
+
+  if deps.len > 0:
+    for (pkg, cmd) in deps:
+      error "\n\nMissing package '" & pkg & "', install it using '" &
+        cmd & "'\n"
+
 {.pragma: cstruct, importc, incompleteStruct,
   header: "<hunspell/hunspell.h>".}
 

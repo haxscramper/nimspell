@@ -64,25 +64,3 @@ func markRepetitions*(buf: var seq[AnnotatedWord]) =
       if prev > 0 and buf[prev].text == buf[idx].text:
         buf[prev].attr = initAnnotation(wskRepetition)
         buf[idx].attr = initAnnotation(wskRepetition)
-
-func highlightSuggestions*(buf: seq[AnnotatedWord]): seq[TermWord] =
-  for word in buf:
-    var resWord = TermWord(text: word.text, kind: word.kind)
-    case word.attr.kind:
-      of wakNone:
-        discard
-      of wakStyle:
-        case word.attr.styleError:
-          of wskWeaselWord:
-            resWord.attr = initStyle(fgRed)
-          of wskPassiveVoice:
-            resWord.attr = initStyle(fgYellow)
-          of wskRepetition:
-            resWord.attr = initStyle(fgGreen)
-      of wakSpelling:
-        resWord.text &= " -> [" & word.attr.replacements.join(" ") & "]"
-        resWord.attr = initStyle(fgBlue)
-
-    result.add resWord
-
-func `$`*(w: TermWord): string = toStyled(w.text, w.attr)
