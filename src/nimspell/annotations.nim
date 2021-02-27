@@ -20,14 +20,21 @@ type
     case kind*: WAnnotationKind
       of wakNone:
         discard
+
       of wakStyle:
         styleError*: WStyleKind
+
       of wakSpelling:
         replacements*: seq[string]
+
       of wakLangtool:
         message*: string
 
-  AnnotatedWord* = TextWord[WAnnotation]
+  AnnotationGroup*[A] = object
+    data*: A
+    annot*: WAnnotation
+
+  AnnotatedWord*[A] = TextWord[AnnotationGroup[A]]
 
 func initAnnotation*(styleKind: WStyleKind): WAnnotation =
   WAnnotation(kind: wakStyle, styleError: styleKind)
@@ -48,26 +55,31 @@ func `$`*[T](text: seq[TextWord[T]]): string =
     else:
       result &= $word
 
-func highlightSuggestions*(buf: seq[AnnotatedWord]): seq[TermWord] =
+func highlightSuggestions*[A](buf: seq[AnnotatedWord[A]]): seq[TermWord] =
   for word in buf:
     var resWord = TermWord(text: word.text, kind: word.kind)
-    case word.attr.kind:
+    case word.attr.annot.kind:
       of wakNone:
         discard
+
       of wakStyle:
-        case word.attr.styleError:
+        case word.attr.annot.styleError:
           of wskWeaselWord:
             resWord.attr = initStyle(fgRed)
+
           of wskPassiveVoice:
             resWord.attr = initStyle(fgYellow)
+
           of wskRepetition:
             resWord.attr = initStyle(fgGreen)
+
       of wakSpelling:
-        resWord.text &= " -> [" & word.attr.replacements.join(" ") & "]"
+        resWord.text &= " -> [" & word.attr.annot.replacements.join(" ") & "]"
         resWord.attr = initStyle(fgBlue)
+
       of wakLangtool:
-        if word.attr.message.len > 0:
-          resWord.text &= " ~# {" & word.attr.message & "}"
+        if word.attr.annot.message.len > 0:
+          resWord.text &= " ~# {" & word.attr.annot.message & "}"
 
         resWord.attr = initStyle(fgMagenta)
 

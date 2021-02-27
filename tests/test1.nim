@@ -4,8 +4,6 @@ import hmisc/other/oswrap
 import hmisc/types/langcodes
 import nimspell/[writegood, annotations, hunspell, langtool]
 
-{.passl: "-lhunspell".}
-
 suite "Writegood":
   test "test 1":
     let text = "We offer a completely diffrent formulation of CFA. " &

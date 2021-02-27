@@ -1,6 +1,9 @@
 import hmisc/other/oswrap
 import std/macros
 
+
+{.passl: "-lhunspell".}
+
 static:
   let deps = getMissingDependencies({
     DistributionDebianDerivatives : @[
@@ -151,4 +154,4 @@ proc markTypos*(buf: var seq[AnnotatedWord], ph: HunSpell) =
     if word.kind == wkText:
       if not ph.isCorrectlySpelled(word.text):
         let sug = getSuggestions(ph, word.text)
-        word.attr = initAnnotation(sug)
+        word.attr.annot = initAnnotation(sug)
